@@ -1,2 +1,6 @@
 raw_behavioral/*
 analyzed_mri/*
+.Rproj.user
+config.yml
+scripts/tempcon/.Rbuildignore
+scripts/tempcon/*.html
