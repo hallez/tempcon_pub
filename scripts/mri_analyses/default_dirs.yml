@@ -1,0 +1,15 @@
+---
+localizerDir: localizer_32ch_short_0001
+mprageDir: mprage_sag_NS_g3_0002
+t219Dir: t2_tse_hippo_perp_0005
+run1Dir: recognition_um_72r_0007
+run2Dir: recognition_um_72r_0008
+run3Dir: recognition_um_72r_0009
+run4Dir: recognition_um_72r_0010
+run5Dir: recognition_um_72r_0011
+run6Dir: recognition_um_72r_0012
+fieldmap1Dir: gre_field_mapping15x15x30_0013
+fieldmap2Dir: gre_field_mapping15x15x30_0014
+segmentedpartialDir: distmatched_epse_72r_0015
+segmentedwholeDir: distmatched_epse_wholebrain_72r_0016
+t215Dir: t2_tse_hippo_perp15_0017

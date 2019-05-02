@@ -39,3 +39,8 @@ NB: R scripts are setup as an [R package](http://r-pkgs.had.co.nz/) - this is pr
 2. Tidy up and create some columns that are helpful for scoring: `behav-tidy.R`
 3. Generate onset and trial information files: `create-onset-files.R`
 4. Plot behavioral data and generate some plots: `behav-stats.R`
+
+## Prepping fMRI data:
+1. I like to rename subject folders so everyone has the same directory structure (i.e., instead of dealing with individualized paths in every script). The standard directory names are contained in `scripts/mri_analyses/default_dirs.yml`. Subject-specific directories are saved in `raw_behavioral/<subject-dir>/<subject-id>.yml`
+  - Since `raw_behavioral` is in the `.gitignore` file, these subject-specific directory files can be downloaded from [osf.io](https://osf.io/qfcjg/)
+1. 
