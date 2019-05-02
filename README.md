@@ -12,11 +12,13 @@ Dimsdale-Zucker, H.R., Montchal, M.E., Reagh, Z.M., Wang, S.-F., Libby, L.A., & 
 1. If you would like to run on your own compute environment, here are the basic requirements:
   * MATLAB r2014b (note: scripts may work in newer versions, but in the limited testing I've done in 2016 and 2017 versions there seem to be some SPM compatibility issues)
   * [SPM 8](https://www.fil.ion.ucl.ac.uk/spm/software/download/)
+  * some [custom MATLAB functions](https://github.com/hallez/MatlabFunctions)
   * Python 2.7.15
     - dependency packages can be installed via `pip install -r requirements.txt`
   * R >= 3.4.4
     - see the DESCRIPTION file for required packages
   * Copy config.yml.example and update the paths `cp config.yml.example config.yml`
+    - NB: I saved some results to a dropbox folder; when setting this path (`dropbox_tempcon` and `dropbox_base_dir`), you can specify anywhere you would like the results to be saved
 
 ## Excluded subjects
 * s1: only has 59 trials in run 3; currently excluding until figure out a subject-specific way to handle different trial numbers
