@@ -34,6 +34,7 @@ Dimsdale-Zucker, H.R., Montchal, M.E., Reagh, Z.M., Wang, S.-F., Libby, L.A., & 
 * s26: missing temporal source memory data
 
 ## Behavioral analyses:
+NB: R scripts are setup as an [R package](http://r-pkgs.had.co.nz/) - this is probably not quite the right time to use a package, but I did this as a convenient way to load the dependencies. What this means is that all of the R scripts assume that you are first opening the `.Rproj` file and then running the R scripts from within RStudio.
 1. Load in data from Presentation and re-format into R: `load_data.R`
 2. Tidy up and create some columns that are helpful for scoring: `behav-tidy.R`
 3. Generate onset and trial information files: `create-onset-files.R`
