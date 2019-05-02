@@ -49,3 +49,5 @@ NB: R scripts are setup as an [R package](http://r-pkgs.had.co.nz/) - this is pr
 1. If starting from raw scanner files, unzip (`python scripts/mri_analyses/unzip_raw_mri.py`), do dicom conversion (`dicom_conversion.m`), and rename subject directories (`python scripts/mri_analyses/rename_unpacked_folders.py`)
   - NB: This is not necessary since I am not supplying zipped dicoms. Scripts are included for reference.
 1. Preprocess the data (this will generate `rf*.nii` files): `preproc_moco_quickcoreg.m`
+2. Run QA. I use code that is based on [Maureen Ritchey's code](https://github.com/memobc/memolab-fmri-qa)
+  - The key thing is that the `rp*.txt` motion files get created so they can be read into the models.
