@@ -38,3 +38,4 @@ NB: R scripts are setup as an [R package](http://r-pkgs.had.co.nz/) - this is pr
 1. Load in data from Presentation and re-format into R: `load_data.R`
 2. Tidy up and create some columns that are helpful for scoring: `behav-tidy.R`
 3. Generate onset and trial information files: `create-onset-files.R`
+4. Plot behavioral data and generate some plots: `behav-stats.R`
