@@ -48,3 +48,4 @@ NB: R scripts are setup as an [R package](http://r-pkgs.had.co.nz/) - this is pr
   - Since `raw_behavioral` is in the `.gitignore` file, these subject-specific directory files can be downloaded from [osf.io](https://osf.io/qfcjg/)
 1. If starting from raw scanner files, unzip (`python scripts/mri_analyses/unzip_raw_mri.py`), do dicom conversion (`dicom_conversion.m`), and rename subject directories (`python scripts/mri_analyses/rename_unpacked_folders.py`)
   - NB: This is not necessary since I am not supplying zipped dicoms. Scripts are included for reference.
+1. Preprocess the data (this will generate `rf*.nii` files): `preproc_moco_quickcoreg.m`
