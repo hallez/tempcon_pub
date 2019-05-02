@@ -19,6 +19,8 @@ Dimsdale-Zucker, H.R., Montchal, M.E., Reagh, Z.M., Wang, S.-F., Libby, L.A., & 
     - see the DESCRIPTION file for required packages
   * Copy config.yml.example and update the paths `cp config.yml.example config.yml`
     - NB: I saved some results to a dropbox folder; when setting this path (`dropbox_tempcon` and `dropbox_base_dir`), you can specify anywhere you would like the results to be saved
+  * Update the paths for `project_dir` in `scripts/mri_analyses/initialize_temp_con.m`
+    - Some of these analyses were run on our HPC. That is what `SLURM_FLAG` is referring to.
 
 ## Excluded subjects
 * s1: only has 59 trials in run 3; currently excluding until figure out a subject-specific way to handle different trial numbers
