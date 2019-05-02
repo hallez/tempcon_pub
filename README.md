@@ -21,6 +21,7 @@ Dimsdale-Zucker, H.R., Montchal, M.E., Reagh, Z.M., Wang, S.-F., Libby, L.A., & 
     - NB: I saved some results to a dropbox folder; when setting this path (`dropbox_tempcon` and `dropbox_base_dir`), you can specify anywhere you would like the results to be saved
   * Update the paths for `project_dir` in `scripts/mri_analyses/initialize_temp_con.m`
     - Some of these analyses were run on our HPC. That is what `SLURM_FLAG` is referring to.
+1. Code from other sources has been included in the `vendor` directory. This is not code that I wrote and therefore is subject to the usage license and instructions of those authors. It is included here out of convenience for those trying to run the scripts in the current repository.
 
 ## Excluded subjects
 * s1: only has 59 trials in run 3; currently excluding until figure out a subject-specific way to handle different trial numbers
