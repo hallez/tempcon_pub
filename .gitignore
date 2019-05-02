@@ -4,3 +4,4 @@ analyzed_mri/*
 config.yml
 scripts/tempcon/.Rbuildignore
 scripts/tempcon/*.html
+.DS_store
