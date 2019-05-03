@@ -55,15 +55,28 @@ NB: R scripts are setup as an [R package](http://r-pkgs.had.co.nz/) - this is pr
   - This can be used in combination with `run_exceptions_TempCon.m` (although currently I haven't updated the subject-specific run information in this file - instead I deal with subject-specific things in the tidying scripts)
 
 ## ROI segmentation: ASHS (automated)
+This is how I generate the hippocampal subfield ROIs.
+
 NB: I've already uploaded ROI masks to [osf.io](https://osf.io/qfcjg/), but this is here for reference if you wanted to re-generate the ROIs.
+
 1. Install ashs. Check on [NITRC](https://www.nitrc.org/projects/ashs/) for latest install. Git code below for version downloaded October 2016.
 ```
 git clone https://github.com/pyushkevich/ashs/tree/d03ddc919e1d38777736dec8b95286cf6afa786d
 ```
 1. Test install using [their instructions](https://sites.google.com/site/hipposubfields/installation)
-2. Download atlas of choice. I use: `ashs_atlas_upennpmc_20140416.tar`
-3. Update the paths in `scripts/mri_analyses/run-ashs.sh`
+1. Download atlas of choice. I use: `ashs_atlas_upennpmc_20140416.tar`
+1. Update the paths in `scripts/mri_analyses/run-ashs.sh`
 1. Run the following command for whichever subjects currently working on.
 ```
 for SUBJ in `seq 1 32`; do export SUBJ="s$SUBJ"; scripts/mri_analyses/run-ashs.sh; done
 ```
+
+## ROI segmentation: Manual
+This is how I generate the MTLc ROIs.
+
+NB: I've already uploaded ROI masks to [osf.io](https://osf.io/qfcjg/). Original tracings are available upon request.
+
+## ROI prep
+Even though the ROIs have been traced, we need to extract them from the tracing files and ensure they'll play nicely when we use them to mask our beta images. Again, all of these steps have already been done if you're downloading them from [osf.io](https://osf.io/qfcjg/). Scripts are provided here as a reference.
+
+1. Divide the ASHS and manually traced ROIs into single files `RSA_extractROIs.m`. In order to run for both sets of ROIs, will need to reset the value of `ASHS_FLAG` and `MANUAL_FLAG`
