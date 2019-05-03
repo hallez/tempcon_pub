@@ -84,3 +84,5 @@ Even though the ROIs have been traced, we need to extract them from the tracing 
 
 1. Divide the ASHS and manually traced ROIs into single files `RSA_extractROIs.m`. In order to run for both sets of ROIs, will need to reset the value of `ASHS_FLAG` and `MANUAL_FLAG`
 1. Combine ROIs of interest (e.g., CA23DG) - only relevant for ASHS ROIs `RSA_combine_ROIs.m`
+1. Split ROIs into head/body tail based on these boundaries - only relevant for ASHS ROIs: `RSA_split_HBT.m`
+  * This uses the subject-specific transition files (`<subject-id>_hc_transitions.yml`) that are included with the raw data [osf.io](https://osf.io/qfcjg/). 
