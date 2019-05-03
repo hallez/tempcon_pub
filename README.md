@@ -88,3 +88,8 @@ Even though the ROIs have been traced, we need to extract them from the tracing 
   * This uses the subject-specific transition files (`<subject-id>_hc_transitions.yml`) that are included with the raw data [osf.io](https://osf.io/qfcjg/).
 1. Reslice the ROIs into EPI space. `RSA_reslice_t2_and_ROIs_batch.m`
 1. Binairize the ROIs so can use as masks. `RSA_binarize_ROIs_batch.m`
+
+## Multivariate fMRI analyses
+Many of these scripts are very time-intensive to run. If possible, I recommend running on an HPC cluster. However, I have included both the single trial beta images as well as the extracted pattern correlations on [osf.io](https://osf.io/qfcjg/). You can also re-generate the output from the mixed models in the [Code Ocean capsule](https://codeocean.com/capsule/0129473). If you want to run all 1000 iterations of the permutations, you can either modify the code on Code Ocean or run on your own HPC. Even my very powerful iMac with 32GB of RAM struggled with these.
+
+1. Generate regressors for single trial models: `RSA_generate_single_trial_regressors.m`
