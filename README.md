@@ -102,4 +102,5 @@ Many of these scripts are very time-intensive to run. If possible, I recommend r
 
 *** Move from matlab into R (just my personal preference) ***
 
-1. Create masks based on trials pairs of interest: `rsa-generate-masks-btwn-runs.R` 
+1. Create masks based on trials pairs of interest: `rsa-generate-masks-btwn-runs.R`
+1. Read in the trial-by-trial pattern correlation matrices from matlab into R and extract the trial pairs of interest: `rsa-load-data-btwn-runs.R`
