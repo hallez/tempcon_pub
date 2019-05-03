@@ -83,3 +83,4 @@ NB: I've already uploaded ROI masks to [osf.io](https://osf.io/qfcjg/). Original
 Even though the ROIs have been traced, we need to extract them from the tracing files and ensure they'll play nicely when we use them to mask our beta images. Again, all of these steps have already been done if you're downloading them from [osf.io](https://osf.io/qfcjg/). Scripts are provided here as a reference.
 
 1. Divide the ASHS and manually traced ROIs into single files `RSA_extractROIs.m`. In order to run for both sets of ROIs, will need to reset the value of `ASHS_FLAG` and `MANUAL_FLAG`
+1. Combine ROIs of interest (e.g., CA23DG) - only relevant for ASHS ROIs `RSA_combine_ROIs.m`
