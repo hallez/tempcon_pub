@@ -52,3 +52,17 @@ NB: R scripts are setup as an [R package](http://r-pkgs.had.co.nz/) - this is pr
 1. Run QA. I use code that is based on [Maureen Ritchey's code](https://github.com/memobc/memolab-fmri-qa)
   - The key thing is that the `spike_regs_rp.txt` motion files get created so they can be read into the models.
 1. Based on the QA, decide what runs/subjects need to be dropped. Manually update `subject_exclusion_info.csv` with any runs that need to be dropped based on QA. Run `python scripts/create_subject_exclude_run_files.py` to create exclusion files for each subject.  
+
+## ROI segmentation: ASHS (automated)
+NB: I've already uploaded ROI masks to [osf.io](https://osf.io/qfcjg/), but this is here for reference if you wanted to re-generate the ROIs.
+1. Install ashs. Check on [NITRC](https://www.nitrc.org/projects/ashs/) for latest install. Git code below for version downloaded October 2016.
+```
+git clone https://github.com/pyushkevich/ashs/tree/d03ddc919e1d38777736dec8b95286cf6afa786d
+```
+1. Test install using [their instructions](https://sites.google.com/site/hipposubfields/installation)
+2. Download atlas of choice. I use: `ashs_atlas_upennpmc_20140416.tar`
+3. Update the paths in `scripts/mri_analyses/run-ashs.sh`
+1. Run the following command for whichever subjects currently working on.
+```
+for SUBJ in `seq 1 32`; do export SUBJ="s$SUBJ"; scripts/mri_analyses/run-ashs.sh; done
+```
