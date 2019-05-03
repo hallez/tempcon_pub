@@ -49,5 +49,6 @@ NB: R scripts are setup as an [R package](http://r-pkgs.had.co.nz/) - this is pr
 1. If starting from raw scanner files, unzip (`python scripts/mri_analyses/unzip_raw_mri.py`), do dicom conversion (`dicom_conversion.m`), and rename subject directories (`python scripts/mri_analyses/rename_unpacked_folders.py`)
   - NB: This is not necessary since I am not supplying zipped dicoms. Scripts are included for reference.
 1. Preprocess the data (this will generate `rf*.nii` files): `preproc_moco_quickcoreg.m`
-2. Run QA. I use code that is based on [Maureen Ritchey's code](https://github.com/memobc/memolab-fmri-qa)
+1. Run QA. I use code that is based on [Maureen Ritchey's code](https://github.com/memobc/memolab-fmri-qa)
   - The key thing is that the `spike_regs_rp.txt` motion files get created so they can be read into the models.
+1. Based on the QA, decide what runs/subjects need to be dropped. Manually update `subject_exclusion_info.csv` with any runs that need to be dropped based on QA. Run `python scripts/create_subject_exclude_run_files.py` to create exclusion files for each subject.  
