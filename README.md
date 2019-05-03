@@ -50,4 +50,4 @@ NB: R scripts are setup as an [R package](http://r-pkgs.had.co.nz/) - this is pr
   - NB: This is not necessary since I am not supplying zipped dicoms. Scripts are included for reference.
 1. Preprocess the data (this will generate `rf*.nii` files): `preproc_moco_quickcoreg.m`
 2. Run QA. I use code that is based on [Maureen Ritchey's code](https://github.com/memobc/memolab-fmri-qa)
-  - The key thing is that the `rp*.txt` motion files get created so they can be read into the models.
+  - The key thing is that the `spike_regs_rp.txt` motion files get created so they can be read into the models.
