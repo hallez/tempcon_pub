@@ -31,14 +31,16 @@ Dimsdale-Zucker, H.R., Montchal, M.E., Reagh, Z.M., Wang, S.-F., Libby, L.A., & 
 * s1: only has 59 trials in run 3; currently excluding until figure out a subject-specific way to handle different trial numbers
 * s2: data were incorrectly oriented at acquisition, and don't have item recog data
 * s3: no item recog data
-* s7: exclude runs 4 and 5 because incorrect logfiles were used
+* s7: exclude runs 4 and 5 because incorrect logfiles were used; excluding temporarily from some R scripts until change scripts to deal with subject-specific exceptions
 * s8: exclude encoding list 8, had to restart this list at encoding and subject may have double-seen items
 * s11: excessive motion in T2; unable to reliably trace subfields
 * s13: experimenter error in which files were run; subject did not see proper counterbalancing of stimuli
-* s15: exclude run 1 because subject saw first few stimuli twice when re-started this run at the scanner
+* s14: excluding temporarily from some R scripts until change scripts to deal with subject-specific exceptions
+* s15: exclude run 1 because subject saw first few stimuli twice when re-started this run at the scanner; excluding temporarily from some R scripts until change scripts to deal with subject-specific exceptions
 * s24: too much motion to trace T2
 * s25: exclude encoding list 1, had to restart this list and subject saw multiple times
 * s26: missing temporal source memory data
+* s32: excluding temporarily from some R scripts until change scripts to deal with subject-specific exceptions
 
 ## Behavioral analyses:
 1. Load in data from Presentation and re-format into R: `load_data.R`
