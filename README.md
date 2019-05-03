@@ -105,3 +105,5 @@ Many of these scripts are very time-intensive to run. If possible, I recommend r
 1. Create masks based on trials pairs of interest: `rsa-generate-masks-btwn-runs.R`
 1. Read in the trial-by-trial pattern correlation matrices from matlab into R and extract the trial pairs of interest: `rsa-load-data-btwn-runs.R`
 1. Tidy up these trial pair correlations so easier to work with: `rsa-tidy-data-btwn-runs.R`
+2. Run mixed models: `mixed-models-btwn-runs.R`
+3. To evaluate the significance of these mixed models, run permutations (with 1000 iterations). These are split into four separate files to speed things up since on most clusters they can be run in parallel. If you just want to see how the scripts work, you can check them out on [Code Ocean](https://codeocean.com/capsule/0129473) where they run with a reduced number of permutation iterations: `perms_list-samediff-halves_quest-samediff.R`, `perms_list-samediff-halves_quest-samediff_by-hemi_incl-hemi-interactions.R`, `perms_list-samediff-halves_quest-samediff_by-hemi_no-hemi-in-models.R`, `perms_list-samediff-halves_quest-samediff_hemi-ME.R`
