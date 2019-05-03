@@ -22,6 +22,10 @@ Dimsdale-Zucker, H.R., Montchal, M.E., Reagh, Z.M., Wang, S.-F., Libby, L.A., & 
   * Update the paths for `project_dir` in `scripts/mri_analyses/initialize_temp_con.m`
     - Some of these analyses were run on our HPC. That is what `SLURM_FLAG` is referring to.
 1. Code from other sources has been included in the `vendor` directory. This is not code that I wrote and therefore is subject to the usage license and instructions of those authors. It is included here out of convenience for those trying to run the scripts in the current repository.
+2. R scripts are setup as an [R package](http://r-pkgs.had.co.nz/) - this is probably not quite the right time to use a package, but I did this as a convenient way to load the dependencies. What this means is that all of the R scripts assume that you are first opening the `tempcon.Rproj` file and then running the R scripts from within RStudio.
+3. Matlab scripts assume you are running from `<repo-dir>/scripts/mri_analyses` with SPM8, `vendor` and my [custom MATLAB functions](https://github.com/hallez/MatlabFunctions) as part of your path.
+  - If they aren't on your path, a good place to add them would be `scripts/mri_analyses/initialize_temp_con.m`
+1. Python scripts assume you are running them from terminal within the `<repo-dir`.
 
 ## Excluded subjects
 * s1: only has 59 trials in run 3; currently excluding until figure out a subject-specific way to handle different trial numbers
@@ -37,7 +41,6 @@ Dimsdale-Zucker, H.R., Montchal, M.E., Reagh, Z.M., Wang, S.-F., Libby, L.A., & 
 * s26: missing temporal source memory data
 
 ## Behavioral analyses:
-NB: R scripts are setup as an [R package](http://r-pkgs.had.co.nz/) - this is probably not quite the right time to use a package, but I did this as a convenient way to load the dependencies. What this means is that all of the R scripts assume that you are first opening the `.Rproj` file and then running the R scripts from within RStudio.
 1. Load in data from Presentation and re-format into R: `load_data.R`
 2. Tidy up and create some columns that are helpful for scoring: `behav-tidy.R`
 3. Generate onset and trial information files: `create-onset-files.R`
