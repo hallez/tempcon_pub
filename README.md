@@ -87,3 +87,4 @@ Even though the ROIs have been traced, we need to extract them from the tracing 
 1. Split ROIs into head/body tail based on these boundaries - only relevant for ASHS ROIs: `RSA_split_HBT.m`
   * This uses the subject-specific transition files (`<subject-id>_hc_transitions.yml`) that are included with the raw data [osf.io](https://osf.io/qfcjg/).
 1. Reslice the ROIs into EPI space. `RSA_reslice_t2_and_ROIs_batch.m`
+1. Binairize the ROIs so can use as masks. `RSA_binarize_ROIs_batch.m`
