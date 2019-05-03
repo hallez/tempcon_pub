@@ -84,23 +84,23 @@ NB: I've already uploaded ROI masks to [osf.io](https://osf.io/qfcjg/). Original
 ## ROI prep
 Even though the ROIs have been traced, we need to extract them from the tracing files and ensure they'll play nicely when we use them to mask our beta images. Again, all of these steps have already been done if you're downloading them from [osf.io](https://osf.io/qfcjg/). Scripts are provided here as a reference.
 
-1. Divide the ASHS and manually traced ROIs into single files `RSA_extractROIs.m`. In order to run for both sets of ROIs, will need to reset the value of `ASHS_FLAG` and `MANUAL_FLAG`
-1. Combine ROIs of interest (e.g., CA23DG) - only relevant for ASHS ROIs `RSA_combine_ROIs.m`
+1. Divide the ASHS and manually traced ROIs into single files: `RSA_extractROIs.m`. In order to run for both sets of ROIs, will need to reset the value of `ASHS_FLAG` and `MANUAL_FLAG`
+1. Combine ROIs of interest (e.g., CA23DG) - only relevant for ASHS ROIs: `RSA_combine_ROIs.m`
 1. Split ROIs into head/body tail based on these boundaries - only relevant for ASHS ROIs: `RSA_split_HBT.m`
   * This uses the subject-specific transition files (`<subject-id>_hc_transitions.yml`) that are included with the raw data [osf.io](https://osf.io/qfcjg/).
-1. Reslice the ROIs into EPI space. `RSA_reslice_t2_and_ROIs_batch.m`
-1. Binairize the ROIs so can use as masks. `RSA_binarize_ROIs_batch.m`
+1. Reslice the ROIs into EPI space: `RSA_reslice_t2_and_ROIs_batch.m`
+1. Binairize the ROIs so can use as masks: `RSA_binarize_ROIs_batch.m`
 
 ## Multivariate fMRI analyses
 Many of these scripts are very time-intensive to run. If possible, I recommend running on an HPC cluster. However, I have included both the single trial beta images as well as the extracted pattern correlations on [osf.io](https://osf.io/qfcjg/). You can also re-generate the output from the mixed models in the [Code Ocean capsule](https://codeocean.com/capsule/0129473). If you want to run all 1000 iterations of the permutations, you can either modify the code on Code Ocean or run on your own HPC. Even my very powerful iMac with 32GB of RAM struggled with these.
 
 1. Generate regressors for single trial models: `RSA_generate_single_trial_regressors.m`
-1. Compute single trial models. This takes ~7.5 hours/subject to run. **NB: This assumes you have preprocessed to generate the `rf` files** `RSA_single_trial_models_batch.m`
+1. Compute single trial models. This takes ~7.5 hours/subject to run. NB: This assumes you have preprocessed to generate the `rf` files:  `RSA_single_trial_models_batch.m`
 2. Identify outlier betas: `RSA_detect_outlier_betas.m`
   * NB: this is currently something I am working on integrating with `RSA_extract_betas_from_ROIs.m` (see line 216), but the beta outlier detection procedure I use here probably won't change.
 1. Extract the beta values from within each ROI of interest and compute trial-by-trial correlation matrices: `RSA_extract_betas_from_ROIs.m`
 
-*** Move from matlab into R (just my personal preference) ***
+***Move from matlab into R (just my personal preference)***
 
 1. Create masks based on trials pairs of interest: `rsa-generate-masks-btwn-runs.R`
 1. Read in the trial-by-trial pattern correlation matrices from matlab into R and extract the trial pairs of interest: `rsa-load-data-btwn-runs.R`
@@ -109,7 +109,7 @@ Many of these scripts are very time-intensive to run. If possible, I recommend r
 3. To evaluate the significance of these mixed models, run permutations (with 1000 iterations). These are split into four separate files to speed things up since on most clusters they can be run in parallel. If you just want to see how the scripts work, you can check them out on [Code Ocean](https://codeocean.com/capsule/0129473) where they run with a reduced number of permutation iterations: `perms_list-samediff-halves_quest-samediff.R`, `perms_list-samediff-halves_quest-samediff_by-hemi_incl-hemi-interactions.R`, `perms_list-samediff-halves_quest-samediff_by-hemi_no-hemi-in-models.R`, `perms_list-samediff-halves_quest-samediff_hemi-ME.R`
 
 ## Searchlight
-**NB: these are just here as example scripts, these are not analyses included in this project**
+**NB: these are just here as example scripts, these are not analyses included in this project.**
 
 1. These scripts assume that trial-by-trial masks have been created (`rsa-generate-masks-btwn-runs.R`), the gray matter masks exists (`run1/c1meanf*.nii`; these can be generated with SPM's segment and deformations procedures which generate probabilistic brain masks - an example file for s10 can be found on [osf.io](https://osf.io/qfcjg/)), and single trial betas already exist (`RSA_single_trial_models_batch.m`).
 2. Run searchlight (this takes about 45 minutes per subject): `searchlight_btwn_runs.m`
