@@ -10,4 +10,3 @@ directories:
     vendor_dir: <absolute-path/tempcon_pub/vendor>
     dropbox_tempcon: <absolute-path>
     dropbox_base_dir: <absolute-path>
-    downloaded_manual_tracings_dir: <absolute-path>
