@@ -62,7 +62,7 @@ trials that do not have at least a 16 second buffer from the end of the run get 
 ## Prepping fMRI data:
 1. I like to rename subject folders so everyone has the same directory structure (i.e., instead of dealing with individualized paths in every script). The standard directory names are contained in `scripts/mri_analyses/default_dirs.yml`. Subject-specific directories are saved in `raw_behavioral/<subject-dir>/<subject-id>.yml`
   - Since `raw_behavioral` is in the `.gitignore` file, these subject-specific directory files can be downloaded from [osf.io](https://osf.io/qfcjg/)
-1. If starting from raw scanner files, unzip (`python scripts/mri_analyses/unzip_raw_mri.py`), do dicom conversion (`dicom_conversion.m`), and rename subject directories (`python scripts/mri_analyses/rename_unpacked_folders.py`)
+1. If starting from raw scanner files, unzip (`python scripts/mri_analyses/unzip_raw_mri.py`), do dicom conversion (`scripts/mri_analyses/dicom_conversion.m`), and rename subject directories (`python scripts/mri_analyses/rename_unpacked_folders.py`)
   - NB: This is not necessary since I am not supplying zipped dicoms. Scripts are included for reference.
 1. Preprocess the data (this will generate `rf*.nii` files): `preproc_moco_quickcoreg.m`
 1. Run QA. I use code that is based on [Maureen Ritchey's code](https://github.com/memobc/memolab-fmri-qa)
