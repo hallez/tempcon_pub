@@ -37,7 +37,7 @@ parfor isub=1:32
     b.analyzed_mri_dir = fullfile(config.analyzed_mri_dir, b.cur_subj, filesep);
     b.raw_behavioral_dir = fullfile(config.raw_behavioral_dir, b.cur_subj, filesep);
     b.analyzed_behavioral_dir = fullfile(config.analyzed_behavioral_dir, b.cur_subj);
-    b.roi_dirs = {'manual_traced_rois'};
+    b.roi_dirs = {'ashs_left', 'ashs_right', 'manual_traced_rois'};
     
     % hardcoding this is necessary for setting up `pattern_corr_all_runs`
     b.num_trials_per_run = 60;
@@ -97,9 +97,11 @@ parfor isub=1:32
         b.all_ROIs = {b.all_ROIs{rois_to_include}};
 
         if REDUCED_ROIS_FLAG
-            b.all_ROIs = {'brPRC_L.nii', 'brPRC_R.nii',...
+            b.all_ROIs = {'brCA1_body.nii', 'brCA2_3_DG_body.nii', 'brsubiculum_body.nii',...
+                'brwhole_hippo.nii',...
+                'brPRC_L.nii', 'brPRC_R.nii',...
                 'braPHC_L.nii', 'braPHC_R.nii', 'brpPHC_L.nii', 'brpPHC_R.nii',...
-                'brCA1_body.nii', 'brCA2_3_DG_body.nii', 'brsubiculum_body.nii'}; 
+                'bralEC_L.nii', 'bralEC_R.nii', 'brpmEC_L.nii', 'brpmEC_R.nii'}; 
         end
 
         for iroi=1:length(b.all_ROIs)
