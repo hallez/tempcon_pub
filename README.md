@@ -46,6 +46,13 @@ To print out information about excluded runs and subjects, `python scripts/tabul
 * s25: exclude encoding list 1, had to restart this list and subject saw multiple times
 * s26: missing temporal source memory data
 
+## Notes about number of TRs
+trials that do not have at least a 16 second buffer from the end of the run get dropped in `create-onset-files.R`
+* s1-s10 have a different number of TRs than s12-s32
+* s12-s32 have 268 TRs in each run
+* s1:s5, s10 have 262 TRs in each run
+* s6:s9 have 267 TRs in each run
+
 ## Behavioral analyses:
 1. Load in data from Presentation and re-format into R: `load_data.R`
 2. Tidy up and create some columns that are helpful for scoring: `behav-tidy.R`
