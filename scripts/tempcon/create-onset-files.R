@@ -266,6 +266,21 @@ for(isubj in subjects){
     dplyr::mutate(row_recog_trial_id = recog_abs_trial_id,
                   col_recog_trial_id = recog_abs_trial_id)
 
+  # --- add subject-specific trials to be excluded ---
+  # exclude encoding list 8 for s8 because they may have seen items twice
+  trial_info_mtx$exclude_behavioral[trial_info_mtx$subj == "s8" & trial_info_mtx$listnum == 8] <- 1
+  # exclude trial 1 in run 1 for s8 b/c get a "file too small" error when read in single trial beta
+  trial_info_mtx$exclude_behavioral[trial_info_mtx$subj == "s8" & trial_info_mtx$item_recog_run == 1 & trial_info_mtx$recog_trial_id == 1] <- 1
+  # this beta also seems to be corrupted - exclude
+  trial_info_mtx$exclude_behavioral[trial_info_mtx$subj == "s8" & trial_info_mtx$item_recog_run == 6 & trial_info_mtx$recog_trial_id == 32] <- 1
+  # exclude s14 encoding list 8 items
+  trial_info_mtx$exclude_behavioral[trial_info_mtx$subj == "s14" & trial_info_mtx$listnum == 8] <- 1
+  # exclude s15 run 1 b/c subject re-saw first few items
+  # since we don't know how many items were repeated, be conservative and drop entire run
+  trial_info_mtx$exclude_behavioral[trial_info_mtx$subj == "s15" & trial_info_mtx$item_recog_run == 1] <- 1
+  # exclude s25 encoding list 1 b/c re-started and may have seen items multiple times
+  trial_info_mtx$exclude_behavioral[trial_info_mtx$subj == "s25" & trial_info_mtx$listnum == 1] <- 1
+
   head(trial_info_mtx)
 
   if(SAVE_FLAG == 1){
