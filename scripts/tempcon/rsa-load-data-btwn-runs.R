@@ -85,7 +85,7 @@ analyzed_behavioral_dir <- paste0(halle::ensure_trailing_slash(config$directorie
 # assume that subjects have folders in `raw_behavioral_dir` that start with `s` and are followed by one or two digits
 subjects <- c(list.files(path=raw_behavioral_dir,pattern="^[s][(123456789)]$|^[s][(123456789)][(0123456789)]$"))
 # chuck out any subjects who need to be excluded
-exclude_subjects <- c("s1", "s2", "s3", "s7", "s11", "s13", "s14", "s24", "s26")
+exclude_subjects <- c("s1", "s2", "s3", "s11", "s13", "s15", "s24", "s26")
 subjects <- subjects[!is.element(subjects, exclude_subjects)]
 length(subjects)
 subjects
