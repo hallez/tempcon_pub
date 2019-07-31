@@ -69,6 +69,13 @@ subjects <- subjects[!is.element(subjects, exclude_subjects_formatted)]
 print(subjects)
 length(subjects)
 
+#' ## TRs by subject
+expected_num_trs <- 268
+tr_in_secs <- 2.01
+tr_buffer <- 16 # could be more conservative, but 16 seconds after the last trial seems reasonable
+subj_262_trs <- c("s1", "s2", "s3", "s4", "s5", "s10")
+subj_267_trs <- c("s6", "s7", "s8", "s9")
+
 #' # Load in data
 # these are the files that are created by `load_data.R`
 # this means that we only need to deal w/ the Presentation annoyances of file naming, etc. once
@@ -121,6 +128,19 @@ for(isubj in subjects){
     print(sprintf("WARNING: %s does not have the correct number of rows in `cur_data_w_onsets`.", isubj))
   }
 
+  # ---figure out subject-specific number of TRs---
+  cur_num_trs <- NULL
+  if(isubj %in% subj_262_trs){
+    message(sprintf("%s has 262 TRs", isubj))
+    cur_num_trs <- 262
+  } else if(isubj %in% subj_267_trs){
+    message(sprintf("%s has 267 TRs", isubj))
+    cur_num_trs <- 267
+  } else {
+    message(sprintf("%s has 268 TRs (as expected", isubj))
+    cur_num_trs <- expected_num_trs
+  }
+
   # ---create regressors---
   # for now, just worry about item recognition hits
   # in the future, could also consider temporal source hits, question source hits, or some combination of all three
@@ -128,12 +148,17 @@ for(isubj in subjects){
   cur_regressors <- NULL
   cur_regressors <-
     cur_data_w_onsets %>%
-    dplyr::mutate(itemHit_model = ifelse(item_recog_scored == "rhitNT", 1,
-                                         ifelse(item_recog_scored == "rhitT", 1,
-                                                ifelse(item_recog_scored == "fhit", 2,
-                                                       ifelse(item_recog_scored == "miss", 3,
-                                                              ifelse(item_recog_scored == "fa", 4,
-                                                                     ifelse(item_recog_scored == "cr", 5, 99)))))),
+    # add in information about number of TRs (so know if need to exlude trials at the end of runs)
+    dplyr::mutate(num_trs = cur_num_trs,
+                  trial_onset_plus_buffer = trial_onset_time_from_start + tr_buffer,
+                  exclude_trial_exceeds_trs = ifelse(trial_onset_plus_buffer > (num_trs * tr_in_secs), "exclude", "keep")) %>%
+    dplyr::mutate(itemHit_model = ifelse(exclude_trial_exceeds_trs == "exclude", 99,
+                                         ifelse(item_recog_scored == "rhitNT", 1,
+                                           ifelse(item_recog_scored == "rhitT", 1,
+                                                  ifelse(item_recog_scored == "fhit", 2,
+                                                         ifelse(item_recog_scored == "miss", 3,
+                                                                ifelse(item_recog_scored == "fa", 4,
+                                                                       ifelse(item_recog_scored == "cr", 5, 99))))))),
                   itemHit_key = stringr::str_replace_all(itemHit_model, "1", "rhit"),
                   itemHit_key = stringr::str_replace_all(itemHit_key, "2", "fhit"),
                   itemHit_key = stringr::str_replace_all(itemHit_key, "3", "miss"),
@@ -185,7 +210,9 @@ for(isubj in subjects){
     dplyr::mutate(duration = 0) %>%
     # eliminate `NA` onset rows
     dplyr::filter(onset != "NA") %>%
-    dplyr::select(subj, onset, duration, item_recog_run, objnum, item_recog_row_number, temporal_scored, question_scored_exact, question_scored_liberal,
+    dplyr::select(subj, onset, duration, item_recog_run, objnum, item_recog_row_number,
+                  temporal_scored, question_scored_exact, question_scored_liberal,
+                  exclude_trial_exceeds_trs,
                   itemHit_model, itemHit_key,
                   itemHitBYType_model, itemHitBYType_key,
                   collapsedFhitMissFA_model, collapsedFhitMissFA_key)
@@ -216,7 +243,7 @@ for(isubj in subjects){
                   question_same_category_hit = ifelse(question_scored_liberal == "hitSC", 1, 0),
                   question_exact_miss = ifelse(question_scored_exact == "incorrect", 1, 0),
                   question_liberal_miss = ifelse(question_scored_liberal == "incorrect", 1, 0),
-                  exclude_behavioral = ifelse(item_recog_scored == "null", 1, 0)) %>%
+                  exclude_behavioral = ifelse(item_recog_scored == "null" | exclude_trial_exceeds_trs == "exclude", 1, 0)) %>%
     # replace the NA values in the `temporal` and `question` columns w/ 0s
     # these seem to propogate from the `temporal_scored` and `question_scored_*` columns
     dplyr::mutate(temporal_exact_hit = ifelse(is.na(temporal_exact_hit), 0, temporal_exact_hit),
@@ -232,7 +259,7 @@ for(isubj in subjects){
     dplyr::mutate(recog_abs_trial_id = ((item_recog_run - 1) * 60) + recog_trial_id) %>%
     # select the columns that may be useful to filter on when selecting trial correlation pairs of interest
     # also include onset information so can logically check that have correct trials
-    dplyr::select(subj, enc_trial_id, recog_trial_id, recog_abs_trial_id, objnum, item_recog_run, trial_onset_time_from_start, listnum, enctask, item_temporal_rhit:exclude_behavioral) %>%
+    dplyr::select(subj, enc_trial_id, recog_trial_id, recog_abs_trial_id, objnum, item_recog_run, trial_onset_time_from_start, listnum, enctask, item_temporal_rhit:exclude_behavioral, exclude_trial_exceeds_trs) %>%
     # ensure the data is in the same order as the trial x trial correlation pairs will be
     dplyr::arrange(item_recog_run, recog_trial_id) %>%
     # duplicate the recog_abs_trial_id column for matching up in `rsa-load-data-btwn-runs.R`
