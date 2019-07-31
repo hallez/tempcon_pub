@@ -49,7 +49,7 @@ dir.create(graph_out_dir, recursive=TRUE)
 # assume that subjects have folders in `raw_behavioral_dir` that start with `s` and are followed by one or two digits
 subjects <- c(list.files(path=raw_behavioral_dir,pattern="^[s][(123456789)]$|^[s][(123456789)][(0123456789)]$"))
 # chuck out any subjects who need to be excluded
-exclude_subjects <- c("s1", "s2", "s3", "s7", "s11", "s13", "s14", "s24", "s26")
+exclude_subjects <- c("s1", "s2", "s3", "s11", "s13", "s15", "s24", "s26")
 subjects <- subjects[!is.element(subjects, exclude_subjects)]
 length(subjects)
 subjects
@@ -193,6 +193,26 @@ if(LOAD_EXISTING_GROUP_FILE_FLAG == 1){
     dplyr::mutate(row_list_num = as.numeric(sub("list", "", row_list)),
                   col_list_num = as.numeric(sub("list", "", col_list)),
                   list_lag = col_list_num - row_list_num) %>%
+    # create a column that splits list by same/different
+    # this seems to be partially contained within `list_fact_recode`,
+    # but this variable doesn't seem to correctly label all of the possible same/diff trial pairs
+    dplyr::mutate(list_same_diff = dplyr::recode_factor(list_fact_recode,
+                                                        "list1_list1" = "same_list", "list1_list2" = "diff_list", "list1_list3" = "diff_list", "list1_list4" = "diff_list",
+                                                        "list2_list1" = "diff_list", "list2_list2" = "same_list", "list2_list3" = "diff_list", "list2_list4" = "diff_list",
+                                                        "list3_list1" = "diff_list", "list3_list2" = "diff_list", "list3_list3" = "same_list", "list3_list4" = "diff_list",
+                                                        "list4_list1" = "diff_list", "list4_list2" = "diff_list", "list4_list3" = "diff_list", "list4_list4" = "same_list",
+                                                        "list5_list5" = "same_list", "list5_list6" = "diff_list", "list5_list7" = "diff_list", "list5_list8" = "diff_list",
+                                                        "list6_list5" = "diff_list", "list6_list6" = "same_list", "list6_list7" = "diff_list", "list6_list8" = "diff_list",
+                                                        "list7_list5" = "diff_list", "list7_list6" = "diff_list", "list7_list7" = "same_list", "list7_list8" = "diff_list",
+                                                        "list8_list5" = "diff_list", "list8_list6" = "diff_list", "list8_list7" = "diff_list", "list8_list8" = "same_list",
+                                                        "list1_list5" = "diff_list", "list1_list6" = "diff_list", "list1_list7" = "diff_list", "list1_list8" = "diff_list",
+                                                        "list2_list5" = "diff_list", "list2_list6" = "diff_list", "list2_list7" = "diff_list", "list2_list8" = "diff_list",
+                                                        "list3_list5" = "diff_list", "list3_list6" = "diff_list", "list3_list7" = "diff_list", "list3_list8" = "diff_list",
+                                                        "list4_list5" = "diff_list", "list4_list6" = "diff_list", "list4_list7" = "diff_list", "list4_list8" = "diff_list",
+                                                        "list5_list1" = "diff_list", "list5_list2" = "diff_list", "list5_list3" = "diff_list", "list5_list4" = "diff_list",
+                                                        "list6_list1" = "diff_list", "list6_list2" = "diff_list", "list6_list3" = "diff_list", "list6_list4" = "diff_list",
+                                                        "list7_list1" = "diff_list", "list7_list2" = "diff_list", "list7_list3" = "diff_list", "list7_list4" = "diff_list",
+                                                        "list8_list1" = "diff_list", "list8_list2" = "diff_list", "list8_list3" = "diff_list", "list8_list4" = "diff_list")) %>%
     # create a column that splits list by same/different half - NB this is different from early/late
     dplyr::mutate(list_same_diff_half = dplyr::recode_factor(list_fact_recode,
                                                              "list1_list1" = "same_half", "list1_list2" = "same_half", "list1_list3" = "same_half", "list1_list4" = "same_half",
