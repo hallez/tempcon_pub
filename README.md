@@ -105,17 +105,18 @@ Even though the ROIs have been traced, we need to extract them from the tracing 
 ## Multivariate fMRI analyses
 Many of these scripts are very time-intensive to run. If possible, I recommend running on an HPC cluster. However, I have included both the single trial beta images as well as the extracted pattern correlations on [osf.io](https://osf.io/qfcjg/). You can also re-generate the output from the mixed models in the [Code Ocean capsule](https://codeocean.com/capsule/0129473). If you want to run all 1000 iterations of the permutations, you can either modify the code on Code Ocean or run on your own HPC. Even my very powerful iMac with 32GB of RAM struggled with these.
 
-1. Generate regressors for single trial models: `RSA_generate_single_trial_regressors.m`
-1. Compute single trial models. This takes ~7.5 hours/subject to run. NB: This assumes you have preprocessed to generate the `rf` files:  `RSA_single_trial_models_batch.m`
-1. Extract the beta values from within each ROI of interest and compute trial-by-trial correlation matrices: `RSA_extract_betas_from_ROIs.m`
+1. Generate regressors for single trial models: `scripts/mri_analyses/RSA_generate_single_trial_regressors.m`
+1. Compute single trial models. This takes ~7.5 hours/subject to run. NB: This assumes you have preprocessed to generate the `rf` files:  `scripts/mri_analyses/RSA_single_trial_models_batch.m`
+1. Extract the beta values from within each ROI of interest and compute trial-by-trial correlation matrices: `scripts/mri_analyses/RSA_extract_betas_from_ROIs.m`
 
 ***Move from matlab into R (just my personal preference)***
 
-1. Create masks based on trials pairs of interest: `rsa-generate-masks-btwn-runs.R`
-1. Read in the trial-by-trial pattern correlation matrices from matlab into R and extract the trial pairs of interest: `rsa-load-data-btwn-runs.R`
-1. Tidy up these trial pair correlations so easier to work with: `rsa-tidy-data-btwn-runs.R`
-2. Run mixed models: `mixed-models-btwn-runs.R`
-3. To evaluate the significance of these mixed models, run permutations (with 1000 iterations). These are split into four separate files to speed things up since on most clusters they can be run in parallel. If you just want to see how the scripts work, you can check them out on [Code Ocean](https://codeocean.com/capsule/0129473) where they run with a reduced number of permutation iterations: `perms_list-samediff-halves_quest-samediff.R`, `perms_list-samediff-halves_quest-samediff_by-hemi_incl-hemi-interactions.R`, `perms_list-samediff-halves_quest-samediff_by-hemi_no-hemi-in-models.R`, `perms_list-samediff-halves_quest-samediff_hemi-ME.R`
+1. Create masks based on trials pairs of interest: `scripts/tempcon/rsa-generate-masks-btwn-runs.R`
+1. Read in the trial-by-trial pattern correlation matrices from matlab into R and extract the trial pairs of interest: `scripts/tempcon/rsa-load-data-btwn-runs.R`
+1. Tidy up these trial pair correlations so easier to work with: `scripts/tempcon/sa-tidy-data-btwn-runs.R`
+2. Run mixed models: `scripts/tempcon/mixed-models-btwn-runs.R`
+3. To evaluate the significance of these mixed models, run permutations (with 1000 iterations). These are split into four separate files to speed things up since on most clusters they can be run in parallel. If you just want to see how the scripts work, you can check them out on [Code Ocean](https://codeocean.com/capsule/0129473) where they run with a reduced number of permutation iterations: `scripts/tempcon/perms_*.R`
+4. To generate the figures as shown in the paper that combine means, difference scores, and permutations use `scripts/tempcon/`
 
 ## Searchlight
 **NB: these are just here as example scripts, these are not analyses included in this project.**
