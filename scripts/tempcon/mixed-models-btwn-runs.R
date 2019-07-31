@@ -62,9 +62,6 @@ load(file.path(analyzed_mri_dir, "z_mm_trial_pairs_all_subj.RData"))
 # this file gets created in `rsa-tidy-data-btwn-runs.R`
 load(file.path(analyzed_mri_dir, "excluded_subjects_variables.RData"))
 
-# for now, also remove other subjects who are causing problems (s3, s15, s32); hopefully add them back in eventually
-exclude_subjects <- c(exclude_subjects, "s3", "s15", "s32")
-
 #' ## Filter z_mm based on minimum trial numbers requirement
 z_mm_filt <- z_mm %>%
   dplyr::ungroup() %>%
@@ -390,6 +387,253 @@ out_df %>%
 
 #' ## Clean up
 remove(list = c("list_sdhalves_quest_samediff_stats", "list_sdhalves_quest_samediff_split_by_hemi_stats"))
+
+#' ## Timer
+tictoc::toc()
+
+#' # Split by encoding list (same/diff) *and* same/diff question
+tictoc::tic(msg = "Split by encoding list (same/diff) and same/diff question")
+
+#' ## Graph
+# repeat 2x so that can split plots by HC vs MTLc (since we'd expect pretty different scales)
+for (iroi in 1:length(rois_of_interest)){
+  cur_rois <- rois_of_interest[[iroi]]
+
+  # figure out how to label the graph when it gets saved out
+  if (any(is.element(hc_rois, cur_rois))) {
+    roi_lbl <- "hc-rois"
+  } else if (any(is.element(mtlc_rois, cur_rois))) {
+    roi_lbl <- "mtlc-rois"
+  }
+
+  z_mm_filt %>%
+    dplyr::filter(list_lag >= 0,
+                  list_same_diff %in% c("same_list", "diff_list"),
+                  question %in% c("same", "diff")) %>%
+    dplyr::filter(roi %in% cur_rois) %>%
+    dplyr::filter(!(is.na(roi_formatted))) %>%
+    dplyr::group_by(subj, hemi, question, list_same_diff, roi_formatted) %>%
+    dplyr::summarize(mean_r = mean(r, na.rm = TRUE)) %>%
+    boxplot_facet_hemi_and_somethingelse(., "roi_formatted", "mean_r", "list_same_diff", "hemi", "question")
+  print(p)
+
+  if(SAVE_GRAPH_FLAG == 1){
+    ggplot2::ggsave(filename = file.path(graph_out_dir, sprintf("list-same-diff_quest-same-diff_corr_%s.pdf", roi_lbl)),
+                    height = 6, width = 12)
+  }
+
+  z_mm_filt %>%
+    dplyr::filter(list_lag >= 0,
+                  list_same_diff %in% c("same_list", "diff_list"),
+                  question %in% c("same", "diff")) %>%
+    dplyr::filter(roi %in% cur_rois) %>%
+    dplyr::filter(!(is.na(roi_formatted))) %>%
+    tidyr::unite(quest_list, question, list_same_diff) %>%
+    dplyr::group_by(subj, hemi, quest_list, roi_formatted) %>%
+    dplyr::summarize(mean_r = mean(r, na.rm = TRUE)) %>%
+    # revalue `quest_list` for plot formatting
+    dplyr::mutate(quest_list_formatted = dplyr::recode(quest_list, "same_same_list" = "SQSL", "same_diff_list" = "SQDL",
+                                                       "diff_same_list" = "DQSL", "diff_diff_list" = "DQDL"),
+                  quest_list_formatted = factor(quest_list_formatted, levels = c("SQSL", "SQDL", "DQSL", "DQDL"))) %>%
+    boxplot_facet_single_var(., "roi_formatted", "mean_r", "quest_list_formatted", "hemi")
+  print(p)
+
+  if(SAVE_GRAPH_FLAG == 1){
+    ggplot2::ggsave(filename = file.path(graph_out_dir, sprintf("list-same-diff_quest-same-diff_4bars_corr_%s.pdf", roi_lbl)),
+                    height = 6, width = 12)
+  }
+
+  z_mm_filt %>%
+    dplyr::filter(list_lag >= 0,
+                  list_same_diff %in% c("same_list", "diff_list"),
+                  question %in% c("same", "diff")) %>%
+    dplyr::filter(roi %in% cur_rois) %>%
+    dplyr::filter(!(is.na(roi_formatted))) %>%
+    tidyr::unite(quest_list, question, list_same_diff) %>%
+    dplyr::group_by(subj, quest_list, roi_formatted) %>%
+    dplyr::summarize(mean_r = mean(r, na.rm = TRUE)) %>%
+    # revalue `quest_list` for plot formatting
+    dplyr::mutate(quest_list_formatted = dplyr::recode(quest_list, "same_same_list" = "SQSL", "same_diff_list" = "SQDL",
+                                                       "diff_same_list" = "DQSL", "diff_diff_list" = "DQDL"),
+                  quest_list_formatted = factor(quest_list_formatted, levels = c("SQSL", "SQDL", "DQSL", "DQDL"))) %>%
+    boxplot_no_facet(., "roi_formatted", "mean_r", "quest_list_formatted")
+  print(p)
+
+  if(SAVE_GRAPH_FLAG == 1){
+    ggplot2::ggsave(filename = file.path(graph_out_dir, sprintf("list-same-diff_quest-same-diff_4bars_corr_%s_collapse-hemi.pdf", roi_lbl)),
+                    height = 6, width = 12)
+  }
+
+  z_mm_filt %>%
+    dplyr::filter(list_lag >= 0,
+                  list_same_diff %in% c("same_list", "diff_list"),
+                  question %in% c("same", "diff")) %>%
+    dplyr::filter(roi %in% cur_rois) %>%
+    dplyr::filter(!(is.na(roi_formatted))) %>%
+    dplyr::group_by(subj, hemi, list_same_diff, roi_formatted) %>%
+    dplyr::summarize(mean_r = mean(r, na.rm = TRUE)) %>%
+    boxplot_facet_single_var(., "roi_formatted", "mean_r", "list_same_diff", "hemi")
+  print(p)
+
+  if(SAVE_GRAPH_FLAG == 1){
+    ggplot2::ggsave(filename = file.path(graph_out_dir, sprintf("list-same-diff_quest-same-diff_ME-list_corr_%s.pdf", roi_lbl)),
+                    height = 6, width = 12)
+  }
+
+  z_mm_filt %>%
+    dplyr::filter(list_lag >= 0,
+                  list_same_diff %in% c("same_list", "diff_list"),
+                  question %in% c("same", "diff")) %>%
+    dplyr::filter(roi %in% cur_rois) %>%
+    dplyr::filter(!(is.na(roi_formatted))) %>%
+    dplyr::group_by(subj, list_same_diff, roi_formatted) %>%
+    dplyr::summarize(mean_r = mean(r, na.rm = TRUE)) %>%
+    boxplot_no_facet(., "roi_formatted", "mean_r", "list_same_diff")
+  print(p)
+
+  if(SAVE_GRAPH_FLAG == 1){
+    ggplot2::ggsave(filename = file.path(graph_out_dir, sprintf("list-same-diff_quest-same-diff_ME-list_corr_%s_collapse-hemi.pdf", roi_lbl)),
+                    height = 6, width = 12)
+  }
+
+  z_mm_filt %>%
+    dplyr::filter(list_lag >= 0,
+                  list_same_diff %in% c("same_list", "diff_list"),
+                  question %in% c("same", "diff")) %>%
+    dplyr::filter(roi %in% cur_rois) %>%
+    dplyr::filter(!(is.na(roi_formatted))) %>%
+    dplyr::group_by(subj, hemi, question, roi_formatted) %>%
+    dplyr::summarize(mean_r = mean(r, na.rm = TRUE)) %>%
+    boxplot_facet_single_var(., "roi_formatted", "mean_r", "question", "hemi")
+  print(p)
+
+  if(SAVE_GRAPH_FLAG == 1){
+    ggplot2::ggsave(filename = file.path(graph_out_dir, sprintf("list-same-diff_quest-same-diff_ME-quest_corr_%s.pdf", roi_lbl)),
+                    height = 6, width = 12)
+  }
+
+  z_mm_filt %>%
+    dplyr::filter(list_lag >= 0,
+                  list_same_diff %in% c("same_list", "diff_list"),
+                  question %in% c("same", "diff")) %>%
+    dplyr::filter(roi %in% cur_rois) %>%
+    dplyr::filter(!(is.na(roi_formatted))) %>%
+    dplyr::group_by(subj, question, roi_formatted) %>%
+    dplyr::summarize(mean_r = mean(r, na.rm = TRUE)) %>%
+    boxplot_no_facet(., "roi_formatted", "mean_r", "question")
+  print(p)
+
+  if(SAVE_GRAPH_FLAG == 1){
+    ggplot2::ggsave(filename = file.path(graph_out_dir, sprintf("list-same-diff_quest-same-diff_ME-quest_corr_%s_collapse-hemi.pdf", roi_lbl)),
+                    height = 6, width = 12)
+  }
+}
+
+#' ## Stats
+list_samediff_quest_samediff_stats <- z_mm_filt %>%
+  dplyr::filter(list_lag >= 0,
+                list_same_diff %in% c("same_list", "diff_list"),
+                question %in% c("same", "diff")) %>%
+  dplyr::group_by(roi) %>%
+  tidyr::nest(.key = "by_roi") %>%
+  dplyr::mutate(mod_null = purrr::map(by_roi, ~lme4::lmer(z_r ~ 1 + (1 | subj), data = .,
+                                                          REML = FALSE, lme4::lmerControl(calc.derivs = FALSE))),
+                mod_hemi = purrr::map(by_roi, ~lme4::lmer(z_r ~ hemi + (1 | subj), data = .,
+                                                          REML = FALSE, lme4::lmerControl(calc.derivs = FALSE))),
+                mod_list_sd = purrr::map(by_roi, ~lme4::lmer(z_r ~ hemi + list_same_diff + (1 | subj), data = .,
+                                                                 REML = FALSE, lme4::lmerControl(calc.derivs = FALSE))),
+                mod_quest = purrr::map(by_roi, ~lme4::lmer(z_r ~ hemi + question + (1 | subj), data = .,
+                                                           REML = FALSE, lme4::lmerControl(calc.derivs = FALSE))),
+                mod_list_sd_quest = purrr::map(by_roi, ~lme4::lmer(z_r ~ hemi + list_same_diff + question + (1 | subj), data = .,
+                                                                       REML = FALSE, lme4::lmerControl(calc.derivs = FALSE))),
+                mod_list_sdXquest = purrr::map(by_roi, ~lme4::lmer(z_r ~ hemi + (list_same_diff * question) + (1 | subj), data = .,
+                                                                       REML = FALSE, lme4::lmerControl(calc.derivs = FALSE))),
+                mod_list_sdXquestXhemi = purrr::map(by_roi, ~lme4::lmer(z_r ~ (list_same_diff * question * hemi) + (1 | subj), data = .,
+                                                                            REML = FALSE, lme4::lmerControl(calc.derivs = FALSE))),
+                aov_null.hemi = purrr::map2(mod_null, mod_hemi, anova),
+                chisq_null.hemi = purrr::map_dbl(aov_null.hemi, ~.$Chisq[2]),
+                aov_ME.listsd = purrr::map2(mod_quest, mod_list_sd_quest, anova),
+                chisq_ME.listsd = purrr::map_dbl(aov_ME.listsd, ~.$Chisq[2]),
+                aov_ME.quest = purrr::map2(mod_list_sd, mod_list_sd_quest, anova),
+                chisq_ME.quest = purrr::map_dbl(aov_ME.quest, ~.$Chisq[2]),
+                aov_listsdquest.listsdXquest = purrr::map2(mod_list_sd_quest, mod_list_sdXquest, anova),
+                chisq_listsdquest.listsdXquest = purrr::map_dbl(aov_listsdquest.listsdXquest, ~.$Chisq[2]),
+                aov_listsdXquest.listsdXquestXhemi = purrr::map2(mod_list_sdXquest, mod_list_sdXquestXhemi, anova),
+                chisq_listsdXquest.listsdXquestXhemi = purrr::map_dbl(aov_listsdXquest.listsdXquestXhemi, ~.$Chisq[2]))
+
+# save out for use in permutations
+save(list_samediff_quest_samediff_stats, file = file.path(analyzed_mri_dir, "list_samediff_quest_samediff_stats.RData"))
+
+#' ### Print model summaries
+#+ warning = FALSE
+mod_summarize(list_samediff_quest_samediff_stats)
+out_df %>%
+  dplyr::filter(term == ".y[[i]]") %>%
+  dplyr::select(roi, aov_type, statistic, Chi.Df, p.value) %>%
+  knitr::kable() %>%
+  kableExtra::kable_styling(bootstrap_options = "striped")
+
+#' ### Trial numbers
+list_samediff_quest_samediff_stats %>%
+  dplyr::select(roi, by_roi) %>%
+  tidyr::unnest() %>%
+  plot_trial_nums_interaction(., "list_same_diff", "question", "subj", "hemi", "roi")
+p_summary
+p <- p + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1))
+print(p)
+
+if(SAVE_GRAPH_FLAG == 1){
+  ggplot2::ggsave(filename = file.path(graph_out_dir, "list-same-diff_quest-same-diff_trialnums.pdf"),
+                  height = 6, width = 12)
+}
+
+#' ## Stats: Split by hemi
+list_samediff_quest_samediff_split_by_hemi_stats <- z_mm_filt %>%
+  dplyr::filter(list_lag >= 0,
+                list_same_diff %in% c("same_list", "diff_list"),
+                question %in% c("same", "diff")) %>%
+  dplyr::group_by(roi, hemi) %>%
+  tidyr::nest(.key = "by_roi") %>%
+  dplyr::mutate(mod_list_sd = purrr::map(by_roi, ~lme4::lmer(z_r ~ list_same_diff + (1 | subj), data = .,
+                                                                 REML = FALSE, lme4::lmerControl(calc.derivs = FALSE))),
+                mod_quest = purrr::map(by_roi, ~lme4::lmer(z_r ~ question + (1 | subj), data = .,
+                                                           REML = FALSE, lme4::lmerControl(calc.derivs = FALSE))),
+                mod_list_sd_quest = purrr::map(by_roi, ~lme4::lmer(z_r ~ list_same_diff + question + (1 | subj), data = .,
+                                                                       REML = FALSE, lme4::lmerControl(calc.derivs = FALSE))),
+                mod_list_sdXquest = purrr::map(by_roi, ~lme4::lmer(z_r ~ (list_same_diff * question) + (1 | subj), data = .,
+                                                                       REML = FALSE, lme4::lmerControl(calc.derivs = FALSE))),
+                aov_ME.listsd = purrr::map2(mod_quest, mod_list_sd_quest, anova),
+                chisq_ME.listsd = purrr::map_dbl(aov_ME.listsd, ~.$Chisq[2]),
+                aov_ME.quest = purrr::map2(mod_list_sd, mod_list_sd_quest, anova),
+                chisq_ME.quest = purrr::map_dbl(aov_ME.quest, ~.$Chisq[2]),
+                aov_listsdquest.listsdXquest = purrr::map2(mod_list_sd_quest, mod_list_sdXquest, anova),
+                chisq_listsdquest.listsdXquest = purrr::map_dbl(aov_listsdquest.listsdXquest, ~.$Chisq[2]))
+
+# save out for use in permutations
+save(list_samediff_quest_samediff_split_by_hemi_stats, file = file.path(analyzed_mri_dir, "list_samediff_quest_samediff_split_by_hemi_stats.RData"))
+
+#' ### Print model summaries
+#+ warning = FALSE
+mod_summarize_by_hemi_and_roi(list_samediff_quest_samediff_split_by_hemi_stats)
+
+#' #### Left
+out_df %>%
+  dplyr::filter(term == ".y[[i]]") %>%
+  dplyr::select(roi, hemi, aov_type, statistic, Chi.Df, p.value) %>%
+  dplyr::filter(hemi == "left") %>%
+  knitr::kable() %>%
+  kableExtra::kable_styling(bootstrap_options = "striped")
+
+#' #### Right
+out_df %>%
+  dplyr::filter(term == ".y[[i]]") %>%
+  dplyr::select(roi, hemi, aov_type, statistic, Chi.Df, p.value) %>%
+  dplyr::filter(hemi == "right") %>%
+  knitr::kable() %>%
+  kableExtra::kable_styling(bootstrap_options = "striped")
+
+#' ## Clean up
+remove(list = c("list_samediff_quest_samediff_stats", "list_samediff_quest_samediff_split_by_hemi_stats"))
 
 #' ## Timer
 tictoc::toc()
