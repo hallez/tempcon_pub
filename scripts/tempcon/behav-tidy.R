@@ -209,6 +209,11 @@ for(isubj in subjects){
                                                                               temporal_source_response %in% c(1:4) & listnum %in% c(5:8) ~ "wrong_half",
                                                                               temporal_source_response %in% c(5:8) & listnum %in% c(1:4) ~ "wrong_half",
                                                                               temporal_source_response > 8 ~ "response exceeds scale")),
+                  # for doing list half bias analyses, also recode responses based on list half
+                  # without regard for whether or not the response was correct
+                  temporal_response_as_list_firstsecond_half = as.factor(case_when(temporal_source_response %in% c(1:4) ~ "first_half",
+                                                                              temporal_source_response %in% c(5:8) ~ "second_half",
+                                                                              temporal_source_response > 8 ~ "response exceeds scale")),
                   # "same_half" are all hits, and "diff_half" are misses
                   temporal_scored_list_samediff_half = as.factor(case_when(temporal_source_response %in% c(1:4) & listnum %in% c(1:4) ~ "same_half_hit",
                                                                            temporal_source_response %in% c(5:8) & listnum %in% c(5:8) ~ "same_half_hit",
