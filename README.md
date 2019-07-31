@@ -64,7 +64,7 @@ trials that do not have at least a 16 second buffer from the end of the run get 
   - Since `raw_behavioral` is in the `.gitignore` file, these subject-specific directory files can be downloaded from [osf.io](https://osf.io/qfcjg/)
 1. If starting from raw scanner files, unzip (`python scripts/mri_analyses/unzip_raw_mri.py`), do dicom conversion (`scripts/mri_analyses/dicom_conversion.m`), and rename subject directories (`python scripts/mri_analyses/rename_unpacked_folders.py`)
   - NB: This is not necessary since I am not supplying zipped dicoms. Scripts are included for reference.
-1. Preprocess the data (this will generate `rf*.nii` files): `preproc_moco_quickcoreg.m`
+1. Preprocess the data (this will generate `rf*.nii` files): `scripts/mri_analyses/preproc_moco_quickcoreg.m`
 1. Run QA. I use code that is based on [Maureen Ritchey's code](https://github.com/memobc/memolab-fmri-qa)
   - The key thing is that the `spike_regs_rp.txt` motion files get created so they can be read into the models.
 1. Based on the QA, decide what runs/subjects need to be dropped. Manually update `subject_exclusion_info.csv` with any runs that need to be dropped based on QA. Run `python scripts/create_subject_exclude_run_files.py` to create exclusion files for each subject.  
@@ -95,12 +95,12 @@ NB: I've already uploaded ROI masks to [osf.io](https://osf.io/qfcjg/). Original
 ## ROI prep
 Even though the ROIs have been traced, we need to extract them from the tracing files and ensure they'll play nicely when we use them to mask our beta images. Again, all of these steps have already been done if you're downloading them from [osf.io](https://osf.io/qfcjg/). Scripts are provided here as a reference.
 
-1. Divide the ASHS and manually traced ROIs into single files: `RSA_extractROIs.m`. In order to run for both sets of ROIs, will need to reset the value of `ASHS_FLAG` and `MANUAL_FLAG`
-1. Combine ROIs of interest (e.g., CA23DG) - only relevant for ASHS ROIs: `RSA_combine_ROIs.m`
+1. Divide the ASHS and manually traced ROIs into single files: `scripts/mri_analyses/RSA_extractROIs.m`. In order to run for both sets of ROIs, will need to reset the value of `ASHS_FLAG` and `MANUAL_FLAG`
+1. Combine ROIs of interest (e.g., CA23DG) - only relevant for ASHS ROIs: `scripts/mri_analyses/RSA_combine_ROIs_batch.m`
 1. Split ROIs into head/body tail based on these boundaries - only relevant for ASHS ROIs: `RSA_split_HBT.m`
   * This uses the subject-specific transition files (`<subject-id>_hc_transitions.yml`) that are included with the raw data [osf.io](https://osf.io/qfcjg/).
-1. Reslice the ROIs into EPI space: `RSA_reslice_t2_and_ROIs_batch.m`
-1. Binairize the ROIs so can use as masks: `RSA_binarize_ROIs_batch.m`
+1. Reslice the ROIs into EPI space: `scripts/mri_analyses/RSA_reslice_t2_and_ROIs_batch.m`
+1. Binairize the ROIs so can use as masks: `scripts/mri_analyses/RSA_binarize_ROIs_batch.m`
 
 ## Multivariate fMRI analyses
 Many of these scripts are very time-intensive to run. If possible, I recommend running on an HPC cluster. However, I have included both the single trial beta images as well as the extracted pattern correlations on [osf.io](https://osf.io/qfcjg/). You can also re-generate the output from the mixed models in the [Code Ocean capsule](https://codeocean.com/capsule/0129473). If you want to run all 1000 iterations of the permutations, you can either modify the code on Code Ocean or run on your own HPC. Even my very powerful iMac with 32GB of RAM struggled with these.
