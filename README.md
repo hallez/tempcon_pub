@@ -107,8 +107,6 @@ Many of these scripts are very time-intensive to run. If possible, I recommend r
 
 1. Generate regressors for single trial models: `RSA_generate_single_trial_regressors.m`
 1. Compute single trial models. This takes ~7.5 hours/subject to run. NB: This assumes you have preprocessed to generate the `rf` files:  `RSA_single_trial_models_batch.m`
-2. Identify outlier betas: `RSA_detect_outlier_betas.m`
-  * NB: this is currently something I am working on integrating with `RSA_extract_betas_from_ROIs.m` (see line 216), but the beta outlier detection procedure I use here probably won't change.
 1. Extract the beta values from within each ROI of interest and compute trial-by-trial correlation matrices: `RSA_extract_betas_from_ROIs.m`
 
 ***Move from matlab into R (just my personal preference)***
