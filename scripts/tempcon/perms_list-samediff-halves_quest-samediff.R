@@ -59,9 +59,6 @@ load(file.path(analyzed_mri_dir, "z_mm_trial_pairs_all_subj.RData"))
 # this file gets created in `rsa-tidy-data-btwn-runs.R`
 load(file.path(analyzed_mri_dir, "excluded_subjects_variables.RData"))
 
-# for now, also remove other subjects who are causing problems (s3, s15, s32); hopefully add them back in eventually
-exclude_subjects <- c(exclude_subjects, "s3", "s15", "s32")
-
 #' ## Filter z_mm based on minimum trial numbers requirement
 z_mm_filt <- z_mm %>%
   dplyr::ungroup() %>%
@@ -233,6 +230,13 @@ same_diff_list_halves_all_results %>%
                 chisq_listhalvesquest.listhalvesXquest, listhalvessamediff.listhalvesXsame_diff_computed_pval) %>%
   knitr::kable() %>%
   kableExtra::kable_styling(bootstrap_options = "striped")
+
+#' ### Save out permutations for future use
+# no need to save out the models or anova results
+# also, no longer need this to be a nested dataframe so can eliminate `by_roi`
+same_diff_list_halves_truncated <- same_diff_list_halves_all_results %>%
+  dplyr::select(-starts_with("mod"), -starts_with("aov"), -by_roi)
+save("same_diff_list_halves_truncated", file = file.path(analyzed_mri_dir, "perms_list-samediff-halves_quest-samediff_chisq-perms.RData"))
 
 #' ## Plot permuted distribution: ME list same/diff half
 plot_permutation(same_diff_list_halves_all_results, "chisq_ME.listhalves_perm", "chisq_ME.listhalves_perm_p95", "chisq_ME.listhalves", "roi")

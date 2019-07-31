@@ -59,9 +59,6 @@ load(file.path(analyzed_mri_dir, "z_mm_trial_pairs_all_subj.RData"))
 # this file gets created in `rsa-tidy-data-btwn-runs.R`
 load(file.path(analyzed_mri_dir, "excluded_subjects_variables.RData"))
 
-# for now, also remove other subjects who are causing problems (s3, s15, s32); hopefully add them back in eventually
-exclude_subjects <- c(exclude_subjects, "s3", "s15", "s32")
-
 #' ## Filter z_mm based on minimum trial numbers requirement
 z_mm_filt <- z_mm %>%
   dplyr::ungroup() %>%
@@ -182,6 +179,11 @@ same_diff_list_halves_hemi_all_results %>%
                 chisq_listhalvesXquest.listhalvesXquestXhemi, chisq_listhalvesXquest.listhalvesXquestXhemi_computed_pval) %>%
   knitr::kable() %>%
   kableExtra::kable_styling(bootstrap_options = "striped")
+
+#' ### Save out permutations for future use
+same_diff_list_halves_hemi_truncated <- same_diff_list_halves_hemi_all_results %>%
+  dplyr::select(-starts_with("mod"), -starts_with("aov"), -by_roi)
+save("same_diff_list_halves_hemi_truncated", file = file.path(analyzed_mri_dir, "perms_list-samediff-halves_quest-samediff-hemi_interactions_chisq-perms.RData"))
 
 #' ## Timer
 tictoc::toc()

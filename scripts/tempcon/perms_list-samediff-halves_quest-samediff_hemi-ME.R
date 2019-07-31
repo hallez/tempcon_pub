@@ -59,9 +59,6 @@ load(file.path(analyzed_mri_dir, "z_mm_trial_pairs_all_subj.RData"))
 # this file gets created in `rsa-tidy-data-btwn-runs.R`
 load(file.path(analyzed_mri_dir, "excluded_subjects_variables.RData"))
 
-# for now, also remove other subjects who are causing problems (s3, s15, s32); hopefully add them back in eventually
-exclude_subjects <- c(exclude_subjects, "s3", "s15", "s32")
-
 #' ## Filter z_mm based on minimum trial numbers requirement
 z_mm_filt <- z_mm %>%
   dplyr::ungroup() %>%
@@ -209,14 +206,10 @@ same_diff_list_halves_all_results %>%
   knitr::kable() %>%
   kableExtra::kable_styling(bootstrap_options = "striped")
 
-#' ## Plot permuted distribution: Null vs hemi
-plot_permutation(same_diff_list_halves_all_results, "chisq_null.hemi_perm", "p95", "chisq_null.hemi", "roi")
-print(p)
-
-if(SAVE_GRAPH_FLAG == 1){
-  ggplot2::ggsave(filename = file.path(graph_out_dir, "list-same-diff-halves_quest-same-diff_null-vs-hemi.pdf"),
-                  height = 6, width = 12)
-}
+#' ### Save out permutations for future use
+same_diff_list_halves_truncated <- same_diff_list_halves_all_results %>%
+  dplyr::select(-starts_with("mod"), -starts_with("aov"), -by_roi)
+save("same_diff_list_halves_truncated", file = file.path(analyzed_mri_dir, "perms_list-samediff-halves_quest-samediff_hemi-ME_chisq-perms.RData"))
 
 #' ## Timer
 tictoc::toc()
