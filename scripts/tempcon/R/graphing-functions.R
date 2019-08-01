@@ -211,6 +211,32 @@ plot_permutation <- function(input_dat, chisq_perm, p95_thresh, chisq_observed, 
     ggplot2::ggtitle("Observed chisq (blue), p < 0.05 cutoff (red)")
 }
 
+plot_permutation_single_roi <- function(input_dat, chisq_perm, p95_thresh, chisq_observed){
+  # calling column names based on: https://stackoverflow.com/questions/22309285/how-to-use-a-variable-to-specify-column-name-in-ggplot (NOT WORKING)
+  p <<- NULL
+  p <<- input_dat %>%
+    ggplot2::ggplot(data = ., ggplot2::aes_string(x = chisq_perm)) +
+    ggplot2::geom_histogram() +
+    # combining string and non-string aes based on:
+    # https://stackoverflow.com/questions/28777626/how-do-i-combine-aes-and-aes-string-options
+    # plot the statistical cutoff
+    ggplot2::geom_vline(ggplot2::aes_q(xintercept = as.name(p95_thresh), color = "red"), linetype="dashed") +
+    # plot the observed p value
+    ggplot2::geom_vline(ggplot2::aes_q(xintercept = as.name(chisq_observed), color = "blue")) +
+    ggplot2::ggtitle("Permutation for Interaction Effect") +
+    ggplot2::xlab("chisq value") +
+    # adding a manual legend based on:
+    # https://stackoverflow.com/questions/32490043/adding-manual-legend-in-ggplot?rq=1
+    ggplot2::scale_color_identity("temporary title", labels = c("observed chisq", "p < 0.05\ncutoff"), guide = "legend") +
+    # adding a dashed line in the legend based on:
+    # https://stackoverflow.com/questions/31519202/dashed-line-in-ggplot-legend
+    ggplot2::guides(color = ggplot2::guide_legend(override.aes = list(linetype = c("solid", "dashed")))) +
+    publication_theme +
+    # override the theme to get back our x-axis title
+    ggplot2::theme(axis.title.x = ggplot2::element_text(size = 20),
+                   legend.position = "right", legend.title = ggplot2::element_blank(), legend.text = ggplot2::element_text(size = 12))
+}
+
 plot_trial_nums_interaction <- function(input_df, var1_name, var2_name, subj_varname, hemi_varname, roi_varname){
   # var1_name = label for x axis
   # var2_name = row variable for faceting
@@ -343,3 +369,90 @@ sfn_2017_theme <- ggplot2::theme(axis.title.x = ggplot2::element_text(size = 30)
                                  axis.title.y = ggplot2::element_text(size = 30, margin = ggplot2::margin(0,20,0,0)), axis.text.y = ggplot2::element_text(size = 25),
                                  strip.text.y = ggplot2::element_text(size = 28),
                                  plot.title = ggplot2::element_text(size = 30))
+
+# based on: https://stackoverflow.com/questions/32936506/store-custom-ggplot-styles-in-object
+four_colors_two_groups <- c("#e66101", "#fdb863", "#5e3c99", "#b2abd2")
+four_colors_two_groups_v2 <- c("#a6611a", "#dfc27d", "#018571", "#80cdc1")
+three_colors_no_groups <- c("darkgoldenrod1", "#0571b0", "#ca0020")
+three_colors_no_groups_v2 <- c("gold", "#0571b0", "violetred3")
+four_colors_fill_theme <- list(ggplot2::scale_fill_manual(values = four_colors_two_groups),
+                               ggplot2::scale_color_manual(values = four_colors_two_groups))
+four_colors_v2_fill_theme <- list(ggplot2::scale_fill_manual(values = four_colors_two_groups_v2),
+                               ggplot2::scale_color_manual(values = four_colors_two_groups_v2))
+three_colors_fill_theme <- list(ggplot2::scale_fill_manual(values = three_colors_no_groups),
+                               ggplot2::scale_color_manual(values = three_colors_no_groups))
+three_colors_v2_fill_theme <- list(ggplot2::scale_fill_manual(values = three_colors_no_groups_v2),
+                                ggplot2::scale_color_manual(values = three_colors_no_groups_v2))
+publication_theme <- list(ggplot2::theme_gray(),
+                          ggplot2::theme(axis.title.x = ggplot2::element_blank(), axis.text.x = ggplot2::element_text(size = 18),
+                                    axis.title.y = ggplot2::element_text(size = 20), axis.text.y = ggplot2::element_text(size = 15),
+                                    legend.position = "none",
+                                    plot.title = ggplot2::element_text(size = 20)))
+
+# approach of means and individual subject points from here:
+# https://drsimonj.svbtle.com/plotting-individual-observations-and-group-means-with-ggplot2
+# approach of nested x axis labels from here (see answer 2):
+# https://stackoverflow.com/questions/18165863/multirow-axis-labels-with-nested-grouping-variables
+meanbars_w_subjscatter_facetted <- function(subj_data_df, group_means_df, x_var, facet_var, y_var, sem_min, sem_max, color_var) {
+  p <<- NULL
+  p <<- ggplot2::ggplot(data = subj_data_df,
+                        ggplot2::aes(x = !!sym(x_var), y = !!sym(y_var), fill = !!sym(color_var))) +
+    ggplot2::geom_point(ggplot2::aes(color = !!sym(color_var))) +
+    ggplot2::geom_col(data = group_means_df, alpha = 0.5, width = 0.7) +
+    ggplot2::geom_errorbar(data = group_means_df,
+                           ggplot2::aes(ymin = !!sym(sem_min), ymax = !!sym(sem_max)),
+                           width = 0.1) +
+    ggplot2::facet_wrap(reformulate(facet_var), strip.position = "bottom") +
+    publication_theme +
+    ggplot2::theme(panel.spacing = ggplot2::unit(1, "lines"),
+                   strip.background = ggplot2::element_blank(),
+                   strip.placement = "outside",
+                   strip.text.x = ggplot2::element_text(size = 14),
+                   axis.text.x = ggplot2::element_text(size = 9))
+}
+
+meanbars_w_subjscatter <- function(subj_data_df, group_means_df, x_var, y_var, sem_min, sem_max, color_var) {
+  p <<- NULL
+  p <<- ggplot2::ggplot(data = subj_data_df,
+                        ggplot2::aes(x = !!sym(x_var), y = !!sym(y_var), fill = !!sym(color_var))) +
+    ggplot2::geom_point(ggplot2::aes(color = !!sym(color_var))) +
+    ggplot2::geom_col(data = group_means_df, alpha = 0.5, width = 0.5) +
+    ggplot2::geom_errorbar(data = group_means_df,
+                           ggplot2::aes(ymin = !!sym(sem_min), ymax = !!sym(sem_max)),
+                           width = 0.1) +
+    publication_theme +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(size = 13))
+}
+
+meanbars_no_scatter <- function(group_means_df, x_var, y_var, sem_min, sem_max, color_var) {
+  p <<- NULL
+  p <<- ggplot2::ggplot(data = group_means_df,
+                        ggplot2::aes(x = !!sym(x_var), y = !!sym(y_var), fill = !!sym(color_var))) +
+    ggplot2::geom_col(alpha = 0.5, width = 0.5) +
+    ggplot2::geom_errorbar(data = group_means_df,
+                           ggplot2::aes(ymin = !!sym(sem_min), ymax = !!sym(sem_max)),
+                           width = 0.1) +
+    publication_theme +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(size = 13))
+}
+
+compute_cor_and_plot <- function(input_df, col1, col2, subj_col){
+  pp <- NULL
+  stat_vals <- NULL
+
+  # calling column names in a function based on: https://stackoverflow.com/questions/2641653/pass-a-data-frame-column-name-to-a-function
+  print(cor.test(input_df[[col1]], input_df[[col2]]))
+
+  stat_vals <<- cor.test(input_df[[col1]], input_df[[col2]])
+  # if set values in the plot as global variables, shit breaks
+  tmp <- cor.test(input_df[[col1]], input_df[[col2]])
+  stat_for_plot <- sprintf("t(%.f) = %0.3f,\nr = %0.3f, p = %s",
+                           tmp$parameter, tmp$statistic,
+                           tmp$estimate,
+                           ifelse(tmp$p.value < 0.05, sprintf("%0.2f*", tmp$p.value), sprintf("%0.2f", tmp$p.value)))
+
+  pp <<- input_df %>%
+    ggplot2::ggplot(., ggplot2::aes_string(x = col1, y = col2)) +
+    ggplot2::geom_point(ggplot2::aes_string(color = subj_col)) +
+    ggplot2::annotate(geom = "text", x = -Inf, y = Inf, hjust = 0, vjust = 1, label = stat_for_plot, size = 7)
+}
