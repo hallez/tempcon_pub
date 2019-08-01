@@ -118,12 +118,5 @@ Many of these scripts are very time-intensive to run. If possible, I recommend r
 3. To evaluate the significance of these mixed models, run permutations (with 1000 iterations). These are split into four separate files to speed things up since on most clusters they can be run in parallel. If you just want to see how the scripts work, you can check them out on [Code Ocean](https://codeocean.com/capsule/0129473) where they run with a reduced number of permutation iterations: `scripts/tempcon/perms_*.R`
 4. To generate the figures as shown in the paper that combine means, difference scores, and permutations use `scripts/tempcon/graphs-of-mixed-models-data.R`
 
-## Searchlight
-**NB: these are just here as example scripts, these are not analyses included in this project.**
-
-1. These scripts assume that trial-by-trial masks have been created (`rsa-generate-masks-btwn-runs.R`), the gray matter masks exists (`run1/c1meanf*.nii`; these can be generated with SPM's segment and deformations procedures which generate probabilistic brain masks - an example file for s10 can be found on [osf.io](https://osf.io/qfcjg/)), and single trial betas already exist (`RSA_single_trial_models_batch.m`).
-2. Run searchlight (this takes about 45 minutes per subject): `searchlight_btwn_runs.m`
-3. To evaluate these searchlights, you would need to take a subtraction between the maps from each condition. Then, to make inferences about group-level results, the maps would need to be normalized into some common space (e.g., MNI). Since I don't actually include these analyses, I am not posting scripts for these steps.
-
 ## Univariate
 (These scripts/analyses are still in progress)
