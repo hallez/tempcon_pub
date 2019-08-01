@@ -28,9 +28,6 @@ Dimsdale-Zucker, H.R., Montchal, M.E., Reagh, Z.M., Wang, S.-F., Libby, L.A., & 
 1. Python scripts assume you are running them from terminal within the `<repo-dir`.
 
 ## Excluded subjects
-R-formatted list: `exclude_subjects <- c("s1", "s2", "s3", "s11", "s13", "s15", "s24", "s26")`
-Matlab-formatted list: `config.exclude_subjects = [1, 2, 3, 11, 13, 15, 24, 26];`
-To print out information about excluded runs and subjects, `python scripts/tabulate_exclusions.py`
 * s1: problem at data collection, unsure what happened but missing one trial in each run; excluding entirely just to be safe
 * s2: data were incorrectly oriented at acquisition, and don't have item recog data
 * s3: no item recog data
@@ -46,6 +43,10 @@ To print out information about excluded runs and subjects, `python scripts/tabul
 * s25: exclude encoding list 1, had to restart this list and subject saw multiple times
 * s26: missing temporal source memory data
 
+### Excluded subjects formatted variables
+* R-formatted list: `exclude_subjects <- c("s1", "s2", "s3", "s11", "s13", "s15", "s24", "s26")`
+* Matlab-formatted list: `config.exclude_subjects = [1, 2, 3, 11, 13, 15, 24, 26];`
+
 ## Notes about number of TRs
 trials that do not have at least a 16 second buffer from the end of the run get dropped in `create-onset-files.R`
 * s1-s10 have a different number of TRs than s12-s32
@@ -54,6 +55,7 @@ trials that do not have at least a 16 second buffer from the end of the run get 
 * s6:s9 have 267 TRs in each run
 
 ## Behavioral analyses:
+1. To print out information about excluded runs and subjects, `python scripts/tabulate_exclusions.py`
 1. Load in data from Presentation and re-format into R: `load_data.R`
 2. Tidy up and create some columns that are helpful for scoring: `behav-tidy.R`
 3. Generate onset and trial information files: `create-onset-files.R`
