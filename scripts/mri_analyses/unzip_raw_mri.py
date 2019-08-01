@@ -12,9 +12,7 @@ sys.path.append(os.getcwd())
 import yaml
 import os.path
 import shutil
-import subprocess
 import zipfile
-import glob
 import os
 
 if __name__ == '__main__':
